@@ -12,6 +12,7 @@
         transition: background-color 0.25s ease, color 0.25s ease;
         margin: 0;
         color: #000;
+        overflow-x: hidden; /* ➜ 가로 스크롤 막기 */
     }
 
     /* === Kiboon 설명 페이지일 때 다크 모드 === */
@@ -113,15 +114,22 @@
     }
 
     /* 메인 영역 */
-    .main {
-        display: flex;
-        align-items: flex-start;
-        gap: 32px;
-        margin-top: 16px;
-    }
+.main {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    margin-top: 16px;
+    max-width: 100%;
+    height: calc(500px);  /* ← 여기 숫자만 조절 */
+    overflow-y: auto;
+}
+
+
+
 
     /* 왼쪽 슬라이더 */
     .side-controls {
+        flex: 0 0 210px;  /* ➜ 고정 폭 210px, 줄지 않게 */
         width: 210px;
         font-size: 13px;
     }
@@ -142,14 +150,17 @@
 
     /* 텍스트 입력 영역 */
     #editor {
-        flex: 1;
+        flex: 1 1 auto;
         min-height: 260px;
         padding: 12px 0;
         font-size: 32px;
         background: transparent;
         border: none;
         outline: none;
-        white-space: pre-wrap;
+        /* 줄바꿈 세팅 */
+        white-space: normal;          /* ➜ pre-wrap 대신 normal */
+        word-break: break-word;       /* ➜ 너무 긴 단어도 줄바꿈 */
+        overflow-wrap: anywhere;      /* ➜ 어디서든 줄바꿈 허용 */
     }
 
     /* === Kiboon 설명 페이지 === */
@@ -182,7 +193,7 @@
     }
 
     .kiboon-desc {
-        font-size: 20px;
+        font-size: 14px;   /* ➜ 14px로 줄임 */
         font-weight: 300;
         line-height: 1.6;
         text-align: center;
@@ -209,13 +220,13 @@
 
     .footer-line2 {
         font-size: 13px;
-        font-weight: 400;
+        font-weight: 600;
         margin-top: 6px;
     }
 
     .footer-line3 {
         font-size: 13px;
-        font-weight: 400;
+        font-weight: 600;
         margin-top: 2px;
     }
 
@@ -296,9 +307,13 @@
 
     <div class="kiboon-title">「Kiboon」 은 감정을 글자로 표현한 서체 프로젝트이다.</div>
     <div class="kiboon-desc">
-'Kiki Type'은 둥글고 부풀어 오른 기쁨, 
-'Ao Type'은 불꽃과 파편의 날카롭고 불규칙한 형태로 분노를 표현했다. 
-'UU Type'은 물방울이 흐르는 슬픔의 모습을 시각화했다.  
+고대 문자의 ‘레부스(Rebus)’ 체계에서 아이디어를 얻어, 보이지 않는 감정을 눈에 보이는 형태로 바꿀 수 있다고 생각했다.
+감정이 바뀌면 글자 모양도 달라진다는 개념 아래, 알파벳의 기본 구조를 바탕으로 세 가지 감정을 시각적으로 연구했다.
+
+
+'Kiki Type'은 둥글고 부풀어 오른 기쁨, 'Ao Type'은 불꽃과 파편의 날카롭고 불규칙한 형태로 분노를 표현했다.
+'UU Type'은 물방울이 흐르는 모습을 떠올리며 슬픈 감정을 시각화했다.
+ 
 
 이 서체를 통해 관람자가 자신의 감정과 눈 맞추기를 바란다.
     </div>
