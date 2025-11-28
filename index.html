@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Type with Kiboon</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 120px 40px 40px 40px; /* 상단 로고 공간 확보 */
+        background: #f4f4f4;
+        transition: background-color 0.25s ease, color 0.25s ease;
+        margin: 0;
+        color: #000;
+    }
+
+    /* === Kiboon 설명 페이지일 때 다크 모드 === */
+    body.kiboon-dark {
+        background: #000000;
+        color: #ffffff;
+    }
+
+    body.kiboon-dark .footer-line1,
+    body.kiboon-dark .footer-line2,
+    body.kiboon-dark .footer-line3 {
+        color: #ffffff;
+    }
+
+    body.kiboon-dark .kiboon-title,
+    body.kiboon-dark .kiboon-desc {
+        color: #ffffff;
+    }
+
+    body.kiboon-dark .kiboon-back-btn {
+        color: #ffffff;
+        border-color: #888;
+        background: transparent;
+    }
+
+    body.kiboon-dark .kiboon-back-btn:hover {
+        background: #222;
+    }
+
+    body.kiboon-dark .logo-img {
+        filter: invert(1) brightness(1.4); /* 로고를 흰색 계열로 보이게 */
+    }
+
+    /* 상단 고정 로고 */
+    .top-header {
+        position: fixed;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 999;
+    }
+
+    .logo-img {
+        width: 150px;
+        user-select: none;
+        transition: filter 0.25s ease;
+    }
+
+    /* 공통 래퍼 */
+    .page-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: left;
+    }
+
+    /* === 메인 페이지 (타이핑) === */
+    #main-page {
+        /* 기본 보임 */
+    }
+
+    /* 탭 메뉴 (Ao~Random + Kiboon? 같은 라인) */
+    .top-bar {
+        margin-top: 50px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 6px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .tab-group {
+        display: flex;
+    }
+
+    .font-tab {
+        background: none;
+        border: none;
+        padding: 4px 8px 8px;
+        margin-right: 16px;
+        font-size: 14px;
+        cursor: pointer;
+        color: #222;
+    }
+
+    .font-tab:hover {
+        color: #000;
+    }
+
+    .font-tab.active {
+        border-bottom: 2px solid #000;
+        font-weight: 500;
+    }
+
+    /* 오른쪽 끝 Kiboon? 탭 */
+    .kiboon-tab {
+        margin-left: auto;
+        font-weight: 600;
+    }
+
+    /* 메인 영역 */
+    .main {
+        display: flex;
+        align-items: flex-start;
+        gap: 32px;
+        margin-top: 16px;
+    }
+
+    /* 왼쪽 슬라이더 */
+    .side-controls {
+        width: 210px;
+        font-size: 13px;
+    }
+
+    .control-group {
+        margin-bottom: 16px;
+    }
+
+    .control-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .side-controls input[type="range"] {
+        width: 100%;
+    }
+
+    /* 텍스트 입력 영역 */
+    #editor {
+        flex: 1;
+        min-height: 260px;
+        padding: 12px 0;
+        font-size: 32px;
+        background: transparent;
+        border: none;
+        outline: none;
+        white-space: pre-wrap;
+    }
+
+    /* === Kiboon 설명 페이지 === */
+    #kiboon-page {
+        display: none; /* 초기에는 숨김 */
+        max-width: 800px;
+        margin: 40px auto 0 auto;
+    }
+
+    .kiboon-back-btn {
+        font-size: 14px;
+        border-radius: 999px;
+        border: 1px solid #ccc;
+        background: #ffffff;
+        padding: 6px 14px;
+        cursor: pointer;
+        margin-bottom: 40px;
+    }
+
+    .kiboon-back-btn:hover {
+        background: #f3f3f3;
+    }
+
+    .kiboon-title {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        text-align: center;
+        color: inherit;
+    }
+
+    .kiboon-desc {
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 1.6;
+        text-align: center;
+        white-space: pre-line;
+        color: inherit;
+    }
+
+    /* 하단 문구: 화면 하단 20px 위 고정 */
+    .footer {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        line-height: 1.4;
+        z-index: 900;
+    }
+
+    .footer-line1 {
+        font-size: 11px;
+        font-weight: 200;
+        color: #000;
+    }
+
+    .footer-line2 {
+        font-size: 13px;
+        font-weight: 400;
+        margin-top: 6px;
+    }
+
+    .footer-line3 {
+        font-size: 13px;
+        font-weight: 400;
+        margin-top: 2px;
+    }
+
+    /* 폰트 파일 */
+    @font-face {
+        font-family: "Ao";
+        src: url("Ao.otf");
+    }
+
+    @font-face {
+        font-family: "Kiki";
+        src: url("Kiki.otf");
+    }
+
+    @font-face {
+        font-family: "UU";
+        src: url("UU.otf");
+    }
+</style>
+</head>
+<body>
+
+<!-- 상단 고정 로고 -->
+<div class="top-header">
+    <img src="assets/logo.png" class="logo-img" alt="logo">
+</div>
+
+<!-- 메인 페이지 (타이핑) -->
+<div id="main-page" class="page-container">
+
+    <!-- 탭 메뉴 -->
+    <div class="top-bar">
+        <div class="tab-group">
+            <button class="font-tab active" onclick="setFont('Ao', this)">Ao</button>
+            <button class="font-tab" onclick="setFont('Kiki', this)">Kiki</button>
+            <button class="font-tab" onclick="setFont('UU', this)">UU</button>
+            <button class="font-tab" onclick="setFont('Random', this)">Random</button>
+        </div>
+        <button class="font-tab kiboon-tab" onclick="openKiboonPage()">Kiboon?</button>
+    </div>
+
+    <div class="main">
+        <!-- 왼쪽 슬라이더 -->
+        <div class="side-controls">
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Font size</span>
+                    <span id="fontSizeValue">32px</span>
+                </div>
+                <input type="range" id="fontSizeRange" min="16" max="96" step="1" value="32">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Letter spacing</span>
+                    <span id="letterSpacingValue">0em</span>
+                </div>
+                <input type="range" id="letterSpacingRange" min="-0.1" max="0.5" step="0.01" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Line height</span>
+                    <span id="lineHeightValue">1.2</span>
+                </div>
+                <input type="range" id="lineHeightRange" min="0.8" max="2" step="0.05" value="1.2">
+            </div>
+        </div>
+
+        <!-- 텍스트 입력 -->
+        <div id="editor" contenteditable="true" oninput="updateText()"></div>
+    </div>
+</div>
+
+<!-- Kiboon 설명 페이지 -->
+<div id="kiboon-page" class="page-container">
+    <button class="kiboon-back-btn" onclick="showMainPage()">Back</button>
+
+    <div class="kiboon-title">「Kiboon」 은 감정을 글자로 표현한 서체 프로젝트이다.</div>
+    <div class="kiboon-desc">
+'Kiki Type'은 둥글고 부풀어 오른 기쁨, 
+'Ao Type'은 불꽃과 파편의 날카롭고 불규칙한 형태로 분노를 표현했다. 
+'UU Type'은 물방울이 흐르는 슬픔의 모습을 시각화했다.  
+
+이 서체를 통해 관람자가 자신의 감정과 눈 맞추기를 바란다.
+    </div>
+</div>
+
+<!-- 하단 footer (두 페이지 공통) -->
+<div class="footer">
+    <div class="footer-line1">Myongji University Multidisciplinary Design 2025 Graduation Exhibition</div>
+    <div class="footer-line2">KIM EUNJI · PARK HYERIM</div>
+    <div class="footer-line3">2025  @ ALL RIGHTS RESERVED</div>
+</div>
+
+<script>
+    let mode = "single";
+    let currentFont = "Ao";
+    let charData = [];
+
+    const bgColors = {
+        Ao: "rgba(226, 95, 158, 0.6)",
+        Kiki: "rgba(240, 235, 69, 0.6)",
+        UU: "rgba(2, 168, 202, 0.6)",
+        Random: "rgba(255, 251, 239, 1)"
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const editor = document.getElementById("editor");
+
+        const fontSize = document.getElementById("fontSizeRange");
+        const letterSp = document.getElementById("letterSpacingRange");
+        const lineH = document.getElementById("lineHeightRange");
+
+        // 초기 상태: Ao
+        document.body.style.backgroundColor = bgColors[currentFont];
+        editor.style.fontFamily = currentFont;
+
+        editor.style.fontSize = fontSize.value + "px";
+        editor.style.letterSpacing = letterSp.value + "em";
+        editor.style.lineHeight = lineH.value;
+
+        document.getElementById("fontSizeValue").textContent = fontSize.value + "px";
+        document.getElementById("letterSpacingValue").textContent = letterSp.value + "em";
+        document.getElementById("lineHeightValue").textContent = lineH.value;
+
+        fontSize.oninput = () => {
+            editor.style.fontSize = fontSize.value + "px";
+            document.getElementById("fontSizeValue").textContent = fontSize.value + "px";
+        };
+        letterSp.oninput = () => {
+            editor.style.letterSpacing = letterSp.value + "em";
+            document.getElementById("letterSpacingValue").textContent = letterSp.value + "em";
+        };
+        lineH.oninput = () => {
+            editor.style.lineHeight = lineH.value;
+            document.getElementById("lineHeightValue").textContent = lineH.value;
+        };
+    });
+
+    function setFont(fontName, el) {
+        const editor = document.getElementById("editor");
+
+        // 모든 폰트 탭에서 active 제거
+        document.querySelectorAll(".font-tab").forEach(t => t.classList.remove("active"));
+        el.classList.add("active");
+
+        if (fontName === "Random") {
+            mode = "random";
+            editor.style.fontFamily = "";
+            document.body.style.backgroundColor = bgColors.Random;
+        } else {
+            mode = "single";
+            currentFont = fontName;
+            editor.style.fontFamily = currentFont;
+            document.body.style.backgroundColor = bgColors[currentFont];
+        }
+
+        updateText();
+    }
+
+    function placeCaretAtEnd(el) {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    function updateText() {
+        const editor = document.getElementById("editor");
+        const t = editor.innerText;
+        const fonts = ["Ao", "Kiki", "UU"];
+
+        let newData = [];
+
+        for (let i = 0; i < t.length; i++) {
+            const c = t[i];
+            let f = null;
+
+            if (mode === "single") {
+                f = currentFont;
+            } else {
+                if (i < charData.length && charData[i].ch === c && charData[i].fontFamily) {
+                    f = charData[i].fontFamily;
+                } else if (c !== " " && c !== "\n") {
+                    f = fonts[Math.floor(Math.random() * fonts.length)];
+                }
+            }
+            newData.push({ ch: c, fontFamily: f });
+        }
+
+        charData = newData;
+
+        let out = "";
+        for (const item of charData) {
+            const ch = item.ch;
+
+            if (ch === "\n") {
+                out += "<br>";
+            } else if (ch === " ") {
+                out += " ";
+            } else {
+                let safe = ch;
+                safe = safe.replace(/&/g, "&amp;")
+                           .replace(/</g, "&lt;")
+                           .replace(/>/g, "&gt;");
+                out += `<span style="font-family:${item.fontFamily}">${safe}</span>`;
+            }
+        }
+
+        editor.innerHTML = out;
+
+        if (mode === "single") editor.style.fontFamily = currentFont;
+        else editor.style.fontFamily = "";
+
+        placeCaretAtEnd(editor);
+    }
+
+    // Kiboon? 탭 → 설명 페이지 + 다크 모드
+    function openKiboonPage() {
+        document.getElementById("main-page").style.display = "none";
+        document.getElementById("kiboon-page").style.display = "block";
+
+        // 다크 모드 클래스 + 진짜 배경색 검정으로
+        document.body.classList.add("kiboon-dark");
+        document.body.style.backgroundColor = "#000000";
+    }
+
+    // Back 버튼 → 메인 페이지 + Ao 상태로 리셋
+    function showMainPage() {
+        document.getElementById("kiboon-page").style.display = "none";
+        document.getElementById("main-page").style.display = "block";
+        document.body.classList.remove("kiboon-dark");
+
+        // Ao로 초기화
+        mode = "single";
+        currentFont = "Ao";
+
+        const editor = document.getElementById("editor");
+        editor.style.fontFamily = "Ao";
+
+        // 탭 active 상태도 Ao로
+        const tabs = document.querySelectorAll(".font-tab");
+        tabs.forEach(t => t.classList.remove("active"));
+        // 탭 구조: [Ao, Kiki, UU, Random, Kiboon?]
+        tabs[0].classList.add("active");
+
+        // 배경도 Ao 컬러로 복귀
+        document.body.style.backgroundColor = bgColors.Ao;
+
+        // 텍스트 다시 그리기 (Ao 폰트 적용)
+        updateText();
+    }
+</script>
+
+</body>
+</html>
