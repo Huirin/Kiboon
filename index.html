@@ -7,12 +7,12 @@
 <style>
     body {
         font-family: Arial, sans-serif;
-        padding: 120px 40px 40px 40px; /* 상단 로고 공간 확보 */
+        padding: 0 40px; /* 위아래는 0, 좌우만 40px */
         background: #f4f4f4;
         transition: background-color 0.25s ease, color 0.25s ease;
         margin: 0;
         color: #000;
-        overflow-x: hidden; /* ➜ 가로 스크롤 막기 */
+        overflow-x: hidden;
     }
 
     /* === Kiboon 설명 페이지일 때 다크 모드 === */
@@ -43,7 +43,7 @@
     }
 
     body.kiboon-dark .logo-img {
-        filter: invert(1) brightness(1.4); /* 로고를 흰색 계열로 보이게 */
+        filter: invert(1) brightness(1.4);
     }
 
     /* 상단 고정 로고 */
@@ -54,6 +54,7 @@
         width: 100%;
         text-align: center;
         z-index: 999;
+        pointer-events: none; /* 클릭 막힘 방지용 옵션 */
     }
 
     .logo-img {
@@ -69,6 +70,17 @@
         text-align: left;
     }
 
+    /* 메인 / Kiboon 페이지 공통: 로고 아래~footer 위까지만 사용 */
+    #main-page,
+    #kiboon-page {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 140px;     /* 로고 영역 + 여백 */
+        bottom: 90px;   /* footer 영역 + 여백 */
+        overflow-y: auto;
+    }
+
     /* === 메인 페이지 (타이핑) === */
     #main-page {
         /* 기본 보임 */
@@ -76,7 +88,6 @@
 
     /* 탭 메뉴 (Ao~Random + Kiboon? 같은 라인) */
     .top-bar {
-        margin-top: 50px;
         border-bottom: 1px solid #ccc;
         padding-bottom: 6px;
         margin-bottom: 16px;
@@ -114,22 +125,17 @@
     }
 
     /* 메인 영역 */
-.main {
-    display: flex;
-    align-items: flex-start;
-    gap: 32px;
-    margin-top: 16px;
-    max-width: 100%;
-    height: calc(500px);  /* ← 여기 숫자만 조절 */
-    overflow-y: auto;
-}
-
-
-
+    .main {
+        display: flex;
+        align-items: flex-start;
+        gap: 32px;
+        margin-top: 16px;
+        max-width: 100%;
+    }
 
     /* 왼쪽 슬라이더 */
     .side-controls {
-        flex: 0 0 210px;  /* ➜ 고정 폭 210px, 줄지 않게 */
+        flex: 0 0 210px;
         width: 210px;
         font-size: 13px;
     }
@@ -157,17 +163,16 @@
         background: transparent;
         border: none;
         outline: none;
-        /* 줄바꿈 세팅 */
-        white-space: normal;          /* ➜ pre-wrap 대신 normal */
-        word-break: break-word;       /* ➜ 너무 긴 단어도 줄바꿈 */
-        overflow-wrap: anywhere;      /* ➜ 어디서든 줄바꿈 허용 */
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 
     /* === Kiboon 설명 페이지 === */
     #kiboon-page {
         display: none; /* 초기에는 숨김 */
         max-width: 800px;
-        margin: 40px auto 0 auto;
+        margin: 0 auto;
     }
 
     .kiboon-back-btn {
@@ -193,7 +198,7 @@
     }
 
     .kiboon-desc {
-        font-size: 14px;   /* ➜ 14px로 줄임 */
+        font-size: 14px;
         font-weight: 300;
         line-height: 1.6;
         text-align: center;
@@ -210,6 +215,7 @@
         text-align: center;
         line-height: 1.4;
         z-index: 900;
+        pointer-events: none;
     }
 
     .footer-line1 {
@@ -220,13 +226,13 @@
 
     .footer-line2 {
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 400;
         margin-top: 6px;
     }
 
     .footer-line3 {
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 400;
         margin-top: 2px;
     }
 
@@ -345,7 +351,6 @@
         const letterSp = document.getElementById("letterSpacingRange");
         const lineH = document.getElementById("lineHeightRange");
 
-        // 초기 상태: Ao
         document.body.style.backgroundColor = bgColors[currentFont];
         editor.style.fontFamily = currentFont;
 
@@ -374,7 +379,6 @@
     function setFont(fontName, el) {
         const editor = document.getElementById("editor");
 
-        // 모든 폰트 탭에서 active 제거
         document.querySelectorAll(".font-tab").forEach(t => t.classList.remove("active"));
         el.classList.add("active");
 
@@ -451,39 +455,31 @@
         placeCaretAtEnd(editor);
     }
 
-    // Kiboon? 탭 → 설명 페이지 + 다크 모드
     function openKiboonPage() {
         document.getElementById("main-page").style.display = "none";
         document.getElementById("kiboon-page").style.display = "block";
 
-        // 다크 모드 클래스 + 진짜 배경색 검정으로
         document.body.classList.add("kiboon-dark");
         document.body.style.backgroundColor = "#000000";
     }
 
-    // Back 버튼 → 메인 페이지 + Ao 상태로 리셋
     function showMainPage() {
         document.getElementById("kiboon-page").style.display = "none";
         document.getElementById("main-page").style.display = "block";
         document.body.classList.remove("kiboon-dark");
 
-        // Ao로 초기화
         mode = "single";
         currentFont = "Ao";
 
         const editor = document.getElementById("editor");
         editor.style.fontFamily = "Ao";
 
-        // 탭 active 상태도 Ao로
         const tabs = document.querySelectorAll(".font-tab");
         tabs.forEach(t => t.classList.remove("active"));
-        // 탭 구조: [Ao, Kiki, UU, Random, Kiboon?]
         tabs[0].classList.add("active");
 
-        // 배경도 Ao 컬러로 복귀
         document.body.style.backgroundColor = bgColors.Ao;
 
-        // 텍스트 다시 그리기 (Ao 폰트 적용)
         updateText();
     }
 </script>
